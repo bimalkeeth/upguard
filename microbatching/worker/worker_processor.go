@@ -131,7 +131,10 @@ func (mb *microBatched[T, R]) ReadResult() <-chan inf.JobResult[R] {
 		defer close(resultRetChan)
 		for {
 			select {
-			case result := <-mb.resultChannel:
+			case result, ok := <-mb.resultChannel:
+				if !ok {
+					return
+				}
 				resultRetChan <- result
 			case <-mb.shutDownChan:
 				return
