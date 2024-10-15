@@ -4,6 +4,7 @@ import (
 	cons "github.com/bimalkeeth/upguard/microbatching/constants"
 	inf "github.com/bimalkeeth/upguard/microbatching/interfaces"
 	"github.com/stretchr/testify/mock"
+	"time"
 )
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Wrong_Batch_Size_Should_Return_Error() {
@@ -103,6 +104,9 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success_W
 
 		suite.NoError(err)
 	}
+
+	time.Sleep(10 * time.Second)
+
 	go func() {
 		microBatched.Shutdown()
 	}()

@@ -1,11 +1,16 @@
 package worker
 
 import (
+	"sync"
 	"time"
 
 	cons "github.com/bimalkeeth/upguard/microbatching/constants"
 	inf "github.com/bimalkeeth/upguard/microbatching/interfaces"
 )
+
+var shutDownOnce sync.Once
+var jobChannelOnce sync.Once
+var resultChannelOnce sync.Once
 
 // startBatchProcessor processes jobs from the jobChannel
 // in batches, executing them in the configured size or timeout.
@@ -22,6 +27,7 @@ func (mb *microBatched[T, R]) startBatchProcessor() {
 				if len(jobsContainer) > 0 {
 					mb.executeBatch(jobsContainer)
 				}
+
 				return
 			}
 
@@ -55,7 +61,12 @@ func (mb *microBatched[T, R]) executeBatch(jobsContainer []inf.Job[T, R]) {
 	go func() {
 		results := mb.batchProcessor.ProcessBatch(mb.serviceCtx, jobsContainer)
 		for _, result := range results {
-			mb.resultChannel <- result
+			select {
+			case mb.resultChannel <- result:
+			case <-mb.shutDownChan:
+				// Ensure we are not sending on a closed resultChannel
+				return
+			}
 		}
 	}()
 }
@@ -78,6 +89,7 @@ func (mb *microBatched[T, R]) Submit(job inf.Job[T, R]) error {
 	select {
 	case mb.jobChannel <- job:
 	case <-mb.shutDownChan:
+		// System is shutting down, do not accept new jobs.
 		return nil
 	}
 
@@ -87,8 +99,14 @@ func (mb *microBatched[T, R]) Submit(job inf.Job[T, R]) error {
 // Shutdown gracefully stops the micro-batching process
 // And waits for all goroutines to complete.
 func (mb *microBatched[T, R]) Shutdown() {
-	close(mb.shutDownChan) // Signal shutdown to all goroutines
+	// Close shutDownChan once
+	onceClose(mb.shutDownChan, &shutDownOnce)
+	// Close jobChannel once
+	onceClose(mb.jobChannel, &jobChannelOnce)
+	// Wait for the batch processor to finish processing all jobs
 	mb.waitGroup.Wait()
+	// Close resultChannel once all jobs are done
+	onceClose(mb.resultChannel, &resultChannelOnce)
 }
 
 // Start begins the micro-batching worker by launching a goroutine
@@ -122,4 +140,10 @@ func (mb *microBatched[T, R]) ReadResult() <-chan inf.JobResult[R] {
 	}(mb, resultRetChan)
 
 	return resultRetChan
+}
+
+func onceClose[T any](ch chan T, once *sync.Once) {
+	once.Do(func() {
+		close(ch)
+	})
 }
