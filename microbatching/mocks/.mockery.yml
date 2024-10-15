@@ -1,0 +1,12 @@
+quiet: False
+disable-version-string: False
+with-expecter: True
+dir: "./{{.PackageName}}"
+mockname: "Mock{{.InterfaceName}}"
+filename: "mock_{{.InterfaceName}}.go"
+packages:
+  github.com/bimalkeeth/upguard/microbatching/interfaces:
+    interfaces:
+      BatchProcessor:
+      Job:
+      JobResult:
