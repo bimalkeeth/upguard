@@ -1,9 +1,9 @@
 package microbatching
 
 import (
+	inf "github.com/bimalkeeth/upguard/microbatching/interfaces"
 	"sync"
 	"time"
-	inf "upguard/microbatching/interfaces"
 )
 
 // BatchConfig represents the configuration for batching operations.

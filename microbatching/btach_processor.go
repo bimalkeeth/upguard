@@ -1,8 +1,8 @@
 package microbatching
 
 import (
+	inf "github.com/bimalkeeth/upguard/microbatching/interfaces"
 	"time"
-	inf "upguard/microbatching/interfaces"
 )
 
 // startBatchProcessor processes jobs from the jobChannel
