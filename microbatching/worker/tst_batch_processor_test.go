@@ -2,6 +2,8 @@ package worker
 
 import (
 	cons "github.com/bimalkeeth/upguard/microbatching/constants"
+	inf "github.com/bimalkeeth/upguard/microbatching/interfaces"
+	"github.com/stretchr/testify/mock"
 )
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Wrong_Batch_Size_Should_Return_Error() {
@@ -50,6 +52,17 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Empty_Or_
 }
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success() {
+	var rres inf.JobResult[string] = StrJobResult[string]{
+
+		JobId:   1,
+		Result:  "test",
+		Error:   nil,
+		JobName: "test",
+		Success: true,
+	}
+
+	suite.mockBatchProcessor.On("ProcessBatch", mock.Anything, mock.Anything).Return([]inf.JobResult[string]{rres})
+
 	microBatched := NewMicroBatched[string, string](suite.GetServiceContext(), BatchConfig{
 		BatchSize:            1,
 		BatchTimeOutDuration: 1,
@@ -61,13 +74,23 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success()
 	})
 
 	suite.NoError(err)
-
 	go func() {
 		microBatched.Shutdown()
 	}()
 }
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success_With_More_Jobs() {
+	var rres inf.JobResult[string] = StrJobResult[string]{
+
+		JobId:   1,
+		Result:  "test",
+		Error:   nil,
+		JobName: "test",
+		Success: true,
+	}
+
+	suite.mockBatchProcessor.On("ProcessBatch", mock.Anything, mock.Anything).Return([]inf.JobResult[string]{rres})
+
 	microBatched := NewMicroBatched[string, string](suite.GetServiceContext(), BatchConfig{
 		BatchSize:            10,
 		BatchTimeOutDuration: 1,
@@ -81,7 +104,6 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success_W
 
 		suite.NoError(err)
 	}
-
 	go func() {
 		microBatched.Shutdown()
 	}()

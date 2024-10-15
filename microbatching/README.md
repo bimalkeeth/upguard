@@ -9,4 +9,7 @@ when time ticks.
 when shut down poison pill issued  existing jobs in the container will be executed and 
 and shut down will be executed.
 
-![img.png](img.png)
+![img.png](flow_diagram.png)
+
+
+![img_1.png](sequence_diagram.png)
