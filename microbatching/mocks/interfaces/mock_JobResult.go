@@ -17,12 +17,12 @@ func (_m *MockJobResult[R]) EXPECT() *MockJobResult_Expecter[R] {
 	return &MockJobResult_Expecter[R]{mock: &_m.Mock}
 }
 
-// Error provides a mock function with given fields:
-func (_m *MockJobResult[R]) Error() error {
+// GetError provides a mock function with given fields:
+func (_m *MockJobResult[R]) GetError() error {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for Error")
+		panic("no return value specified for GetError")
 	}
 
 	var r0 error
@@ -35,29 +35,29 @@ func (_m *MockJobResult[R]) Error() error {
 	return r0
 }
 
-// MockJobResult_Error_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Error'
-type MockJobResult_Error_Call[R any] struct {
+// MockJobResult_GetError_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetError'
+type MockJobResult_GetError_Call[R any] struct {
 	*mock.Call
 }
 
-// Error is a helper method to define mock.On call
-func (_e *MockJobResult_Expecter[R]) Error() *MockJobResult_Error_Call[R] {
-	return &MockJobResult_Error_Call[R]{Call: _e.mock.On("Error")}
+// GetError is a helper method to define mock.On call
+func (_e *MockJobResult_Expecter[R]) GetError() *MockJobResult_GetError_Call[R] {
+	return &MockJobResult_GetError_Call[R]{Call: _e.mock.On("GetError")}
 }
 
-func (_c *MockJobResult_Error_Call[R]) Run(run func()) *MockJobResult_Error_Call[R] {
+func (_c *MockJobResult_GetError_Call[R]) Run(run func()) *MockJobResult_GetError_Call[R] {
 	_c.Call.Run(func(args mock.Arguments) {
 		run()
 	})
 	return _c
 }
 
-func (_c *MockJobResult_Error_Call[R]) Return(_a0 error) *MockJobResult_Error_Call[R] {
+func (_c *MockJobResult_GetError_Call[R]) Return(_a0 error) *MockJobResult_GetError_Call[R] {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockJobResult_Error_Call[R]) RunAndReturn(run func() error) *MockJobResult_Error_Call[R] {
+func (_c *MockJobResult_GetError_Call[R]) RunAndReturn(run func() error) *MockJobResult_GetError_Call[R] {
 	_c.Call.Return(run)
 	return _c
 }

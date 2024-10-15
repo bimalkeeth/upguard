@@ -1,9 +1,10 @@
 package worker
 
 import (
+	"time"
+
 	cons "github.com/bimalkeeth/upguard/microbatching/constants"
 	inf "github.com/bimalkeeth/upguard/microbatching/interfaces"
-	"time"
 )
 
 // startBatchProcessor processes jobs from the jobChannel
@@ -25,14 +26,15 @@ func (mb *microBatched[T, R]) startBatchProcessor() {
 		case <-mb.batchTimer.C:
 			if len(jobsContainer) > 0 {
 				mb.executeBatch(jobsContainer)
+				jobsContainer = []inf.Job[T, R]{}
 			}
-			return
 		case <-mb.shutDownChan:
 			mb.batchTimer.Stop()
 
 			if len(jobsContainer) > 0 {
 				mb.executeBatch(jobsContainer)
 			}
+
 			return
 		}
 	}
@@ -51,16 +53,16 @@ func (mb *microBatched[T, R]) executeBatch(jobsContainer []inf.Job[T, R]) {
 // Submit adds a job to the micro-batching system.
 // If the system is shutting down, it will not accept new jobs.
 func (mb *microBatched[T, R]) Submit(job inf.Job[T, R]) error {
-	if job == nil {
-		return cons.ErrJobCannotBeNil
-	}
-
 	if mb.batchConfig.BatchSize == 0 {
 		return cons.ErrInvalidBatchSize
 	}
 
 	if mb.batchConfig.BatchTimeOutDuration.Seconds() == 0 {
 		return cons.ErrTimeDuration
+	}
+
+	if job == nil {
+		return cons.ErrJobCannotBeNil
 	}
 
 	select {

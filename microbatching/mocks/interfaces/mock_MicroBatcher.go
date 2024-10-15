@@ -21,8 +21,21 @@ func (_m *MockMicroBatcher[T, R]) EXPECT() *MockMicroBatcher_Expecter[T, R] {
 }
 
 // Submit provides a mock function with given fields: job
-func (_m *MockMicroBatcher[T, R]) Submit(job interfaces.Job[T, R]) {
-	_m.Called(job)
+func (_m *MockMicroBatcher[T, R]) Submit(job interfaces.Job[T, R]) error {
+	ret := _m.Called(job)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Submit")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(interfaces.Job[T, R]) error); ok {
+		r0 = rf(job)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // MockMicroBatcher_Submit_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Submit'
@@ -43,12 +56,12 @@ func (_c *MockMicroBatcher_Submit_Call[T, R]) Run(run func(job interfaces.Job[T,
 	return _c
 }
 
-func (_c *MockMicroBatcher_Submit_Call[T, R]) Return() *MockMicroBatcher_Submit_Call[T, R] {
-	_c.Call.Return()
+func (_c *MockMicroBatcher_Submit_Call[T, R]) Return(_a0 error) *MockMicroBatcher_Submit_Call[T, R] {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockMicroBatcher_Submit_Call[T, R]) RunAndReturn(run func(interfaces.Job[T, R])) *MockMicroBatcher_Submit_Call[T, R] {
+func (_c *MockMicroBatcher_Submit_Call[T, R]) RunAndReturn(run func(interfaces.Job[T, R]) error) *MockMicroBatcher_Submit_Call[T, R] {
 	_c.Call.Return(run)
 	return _c
 }

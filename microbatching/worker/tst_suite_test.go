@@ -1,10 +1,13 @@
 package worker
 
 import (
+	"github.com/bimalkeeth/upguard/microbatching/interfaces"
 	mockinf "github.com/bimalkeeth/upguard/microbatching/mocks/interfaces"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"sync"
 	"testing"
+	"time"
 )
 
 type WorkerSuiteTest struct {
@@ -22,6 +25,18 @@ func (suite *WorkerSuiteTest) SetupTest() {
 	suite.mockJobResult = mockinf.NewMockJobResult[string](suite.T())
 	suite.mockMicroBatcher = mockinf.NewMockMicroBatcher[string, string](suite.T())
 	suite.asserts = assert.New(suite.T())
+}
+
+func (suite *WorkerSuiteTest) GetNewMicroBatched(batchConfig BatchConfig) *microBatched[string, string] {
+	return &microBatched[string, string]{
+		batchConfig:    batchConfig,
+		batchTimer:     time.NewTimer(10),
+		resultChannel:  make(chan interfaces.JobResult[string]),
+		waitGroup:      sync.WaitGroup{},
+		batchProcessor: suite.mockBatchProcessor,
+		shutDownChan:   make(chan struct{}),
+		jobChannel:     make(chan interfaces.Job[string, string]),
+	}
 }
 
 func TestSuite(t *testing.T) {

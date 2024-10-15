@@ -8,8 +8,8 @@ type JobResult[R any] interface {
 	GetJobName() string
 	// IsSuccess returns true if the job execution was successful; otherwise, it returns false.
 	IsSuccess() bool
-	// Error returns an error if the job execution failed; otherwise, it returns nil.
-	Error() error
+	// GetError returns an error if the job execution failed; otherwise, it returns nil.
+	GetError() error
 	// GetResult returns the result of the job execution.
 	GetResult() R
 }
