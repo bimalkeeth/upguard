@@ -6,7 +6,7 @@ import (
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Wrong_Batch_Size_Should_Return_Error() {
 
-	microBatched := NewMicroBatched[string, string](BatchConfig{
+	microBatched := NewMicroBatched[string, string](suite.GetServiceContext(), BatchConfig{
 		BatchSize:            0,
 		BatchTimeOutDuration: 0,
 	}, suite.mockBatchProcessor)
@@ -22,7 +22,7 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Wrong_Bat
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Wrong_Duration_Should_Return_Error() {
 
-	microBatched := NewMicroBatched[string, string](BatchConfig{
+	microBatched := NewMicroBatched[string, string](suite.GetServiceContext(), BatchConfig{
 		BatchSize:            2,
 		BatchTimeOutDuration: 0,
 	}, suite.mockBatchProcessor)
@@ -38,7 +38,7 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Wrong_Dur
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Empty_Or_Nill_Job_Should_Return_Error() {
 
-	microBatched := NewMicroBatched[string, string](BatchConfig{
+	microBatched := NewMicroBatched[string, string](suite.GetServiceContext(), BatchConfig{
 		BatchSize:            2,
 		BatchTimeOutDuration: 3,
 	}, suite.mockBatchProcessor)
@@ -50,7 +50,7 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Empty_Or_
 }
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success() {
-	microBatched := NewMicroBatched[string, string](BatchConfig{
+	microBatched := NewMicroBatched[string, string](suite.GetServiceContext(), BatchConfig{
 		BatchSize:            1,
 		BatchTimeOutDuration: 1,
 	}, suite.mockBatchProcessor)
@@ -65,7 +65,7 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success()
 }
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success_With_More_Jobs() {
-	microBatched := NewMicroBatched[string, string](BatchConfig{
+	microBatched := NewMicroBatched[string, string](suite.GetServiceContext(), BatchConfig{
 		BatchSize:            10,
 		BatchTimeOutDuration: 1,
 	}, suite.mockBatchProcessor)

@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"context"
 	"github.com/bimalkeeth/upguard/microbatching/interfaces"
 	mockinf "github.com/bimalkeeth/upguard/microbatching/mocks/interfaces"
 	"github.com/stretchr/testify/assert"
@@ -37,6 +38,10 @@ func (suite *WorkerSuiteTest) GetNewMicroBatched(batchConfig BatchConfig) *micro
 		shutDownChan:   make(chan struct{}),
 		jobChannel:     make(chan interfaces.Job[string, string]),
 	}
+}
+
+func (suite *WorkerSuiteTest) GetServiceContext() context.Context {
+	return context.Background()
 }
 
 func TestSuite(t *testing.T) {

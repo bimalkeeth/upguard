@@ -43,7 +43,7 @@ func (mb *microBatched[T, R]) startBatchProcessor() {
 // executeBatch processes a worker of jobs and sends the results through the resultChannel.
 func (mb *microBatched[T, R]) executeBatch(jobsContainer []inf.Job[T, R]) {
 	go func() {
-		results := mb.batchProcessor.ProcessBatch(jobsContainer)
+		results := mb.batchProcessor.ProcessBatch(mb.serviceCtx, jobsContainer)
 		for _, result := range results {
 			mb.resultChannel <- result
 		}

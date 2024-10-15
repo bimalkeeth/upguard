@@ -3,6 +3,8 @@
 package interfaces
 
 import (
+	context "context"
+
 	interfaces "github.com/bimalkeeth/upguard/microbatching/interfaces"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -20,17 +22,17 @@ func (_m *MockBatchProcessor[T, R]) EXPECT() *MockBatchProcessor_Expecter[T, R] 
 	return &MockBatchProcessor_Expecter[T, R]{mock: &_m.Mock}
 }
 
-// ProcessBatch provides a mock function with given fields: jobs
-func (_m *MockBatchProcessor[T, R]) ProcessBatch(jobs []interfaces.Job[T, R]) []interfaces.JobResult[R] {
-	ret := _m.Called(jobs)
+// ProcessBatch provides a mock function with given fields: ctx, jobs
+func (_m *MockBatchProcessor[T, R]) ProcessBatch(ctx context.Context, jobs []interfaces.Job[T, R]) []interfaces.JobResult[R] {
+	ret := _m.Called(ctx, jobs)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ProcessBatch")
 	}
 
 	var r0 []interfaces.JobResult[R]
-	if rf, ok := ret.Get(0).(func([]interfaces.Job[T, R]) []interfaces.JobResult[R]); ok {
-		r0 = rf(jobs)
+	if rf, ok := ret.Get(0).(func(context.Context, []interfaces.Job[T, R]) []interfaces.JobResult[R]); ok {
+		r0 = rf(ctx, jobs)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]interfaces.JobResult[R])
@@ -46,14 +48,15 @@ type MockBatchProcessor_ProcessBatch_Call[T any, R any] struct {
 }
 
 // ProcessBatch is a helper method to define mock.On call
+//   - ctx context.Context
 //   - jobs []interfaces.Job[T,R]
-func (_e *MockBatchProcessor_Expecter[T, R]) ProcessBatch(jobs interface{}) *MockBatchProcessor_ProcessBatch_Call[T, R] {
-	return &MockBatchProcessor_ProcessBatch_Call[T, R]{Call: _e.mock.On("ProcessBatch", jobs)}
+func (_e *MockBatchProcessor_Expecter[T, R]) ProcessBatch(ctx interface{}, jobs interface{}) *MockBatchProcessor_ProcessBatch_Call[T, R] {
+	return &MockBatchProcessor_ProcessBatch_Call[T, R]{Call: _e.mock.On("ProcessBatch", ctx, jobs)}
 }
 
-func (_c *MockBatchProcessor_ProcessBatch_Call[T, R]) Run(run func(jobs []interfaces.Job[T, R])) *MockBatchProcessor_ProcessBatch_Call[T, R] {
+func (_c *MockBatchProcessor_ProcessBatch_Call[T, R]) Run(run func(ctx context.Context, jobs []interfaces.Job[T, R])) *MockBatchProcessor_ProcessBatch_Call[T, R] {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].([]interfaces.Job[T, R]))
+		run(args[0].(context.Context), args[1].([]interfaces.Job[T, R]))
 	})
 	return _c
 }
@@ -63,7 +66,7 @@ func (_c *MockBatchProcessor_ProcessBatch_Call[T, R]) Return(_a0 []interfaces.Jo
 	return _c
 }
 
-func (_c *MockBatchProcessor_ProcessBatch_Call[T, R]) RunAndReturn(run func([]interfaces.Job[T, R]) []interfaces.JobResult[R]) *MockBatchProcessor_ProcessBatch_Call[T, R] {
+func (_c *MockBatchProcessor_ProcessBatch_Call[T, R]) RunAndReturn(run func(context.Context, []interfaces.Job[T, R]) []interfaces.JobResult[R]) *MockBatchProcessor_ProcessBatch_Call[T, R] {
 	_c.Call.Return(run)
 	return _c
 }

@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -24,11 +25,13 @@ type microBatched[T any, R any] struct {
 	shutDownChan   chan struct{}
 	waitGroup      sync.WaitGroup
 	batchTimer     *time.Timer
+	serviceCtx     context.Context
 }
 
 // NewMicroBatched initializes and starts a micro-batching
 // system to worker jobs with specified worker configuration.
 func NewMicroBatched[T any, R any](
+	serviceCtx context.Context,
 	batchConfig BatchConfig,
 	batchProcessor inf.BatchProcessor[T, R]) inf.MicroBatcher[T, R] {
 	microBatched := &microBatched[T, R]{
@@ -38,12 +41,11 @@ func NewMicroBatched[T any, R any](
 		batchProcessor: batchProcessor,
 		shutDownChan:   make(chan struct{}),
 		waitGroup:      sync.WaitGroup{},
+		serviceCtx:     serviceCtx,
 	}
 
 	microBatched.assignTimer()
-
 	microBatched.waitGroup.Add(1)
-
 	microBatched.start()
 
 	return microBatched
