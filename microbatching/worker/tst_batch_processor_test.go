@@ -62,6 +62,9 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success()
 
 	suite.NoError(err)
 
+	go func() {
+		microBatched.Shutdown()
+	}()
 }
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success_With_More_Jobs() {
@@ -78,4 +81,8 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success_W
 
 		suite.NoError(err)
 	}
+
+	go func() {
+		microBatched.Shutdown()
+	}()
 }

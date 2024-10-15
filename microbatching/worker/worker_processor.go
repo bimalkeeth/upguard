@@ -74,6 +74,13 @@ func (mb *microBatched[T, R]) Submit(job inf.Job[T, R]) error {
 	return nil
 }
 
+// Shutdown gracefully stops the micro-batching process
+// And waits for all goroutines to complete.
+func (mb *microBatched[T, R]) Shutdown() {
+	close(mb.shutDownChan)
+	mb.waitGroup.Wait()
+}
+
 // Start begins the micro-batching worker by launching a goroutine
 // that listens for incoming jobs and processes them in batches.
 func (mb *microBatched[T, R]) start() {
