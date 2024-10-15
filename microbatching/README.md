@@ -9,6 +9,11 @@ when time ticks.
 when shut down poison pill issued  existing jobs in the container will be executed and 
 and shut down will be executed.
 
+
+
+This library is designed for micro batch operations with view of execution happen each one second delay if the batch size is  met.
+
+
 ![img.png](flow_diagram.png)
 
 
