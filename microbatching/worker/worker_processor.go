@@ -16,7 +16,15 @@ func (mb *microBatched[T, R]) startBatchProcessor() {
 
 	for {
 		select {
-		case job := <-mb.jobChannel:
+		case job, ok := <-mb.jobChannel:
+			if !ok {
+				// jobChannel has been closed and drained, process remaining jobs and exit.
+				if len(jobsContainer) > 0 {
+					mb.executeBatch(jobsContainer)
+				}
+				return
+			}
+
 			jobsContainer = append(jobsContainer, job)
 			if len(jobsContainer) >= mb.batchConfig.BatchSize {
 				mb.executeBatch(jobsContainer)
@@ -30,6 +38,7 @@ func (mb *microBatched[T, R]) startBatchProcessor() {
 				jobsContainer = []inf.Job[T, R]{}
 			}
 		case <-mb.shutDownChan:
+			// Received shutdown signal, process any remaining jobs
 			mb.batchTimer.Stop()
 
 			if len(jobsContainer) > 0 {
@@ -78,7 +87,7 @@ func (mb *microBatched[T, R]) Submit(job inf.Job[T, R]) error {
 // Shutdown gracefully stops the micro-batching process
 // And waits for all goroutines to complete.
 func (mb *microBatched[T, R]) Shutdown() {
-	close(mb.shutDownChan)
+	close(mb.shutDownChan) // Signal shutdown to all goroutines
 	mb.waitGroup.Wait()
 }
 

@@ -20,6 +20,85 @@ func (_m *MockMicroBatcher[T, R]) EXPECT() *MockMicroBatcher_Expecter[T, R] {
 	return &MockMicroBatcher_Expecter[T, R]{mock: &_m.Mock}
 }
 
+// ReadResult provides a mock function with given fields:
+func (_m *MockMicroBatcher[T, R]) ReadResult() <-chan interfaces.JobResult[R] {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for ReadResult")
+	}
+
+	var r0 <-chan interfaces.JobResult[R]
+	if rf, ok := ret.Get(0).(func() <-chan interfaces.JobResult[R]); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(<-chan interfaces.JobResult[R])
+		}
+	}
+
+	return r0
+}
+
+// MockMicroBatcher_ReadResult_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadResult'
+type MockMicroBatcher_ReadResult_Call[T any, R any] struct {
+	*mock.Call
+}
+
+// ReadResult is a helper method to define mock.On call
+func (_e *MockMicroBatcher_Expecter[T, R]) ReadResult() *MockMicroBatcher_ReadResult_Call[T, R] {
+	return &MockMicroBatcher_ReadResult_Call[T, R]{Call: _e.mock.On("ReadResult")}
+}
+
+func (_c *MockMicroBatcher_ReadResult_Call[T, R]) Run(run func()) *MockMicroBatcher_ReadResult_Call[T, R] {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockMicroBatcher_ReadResult_Call[T, R]) Return(_a0 <-chan interfaces.JobResult[R]) *MockMicroBatcher_ReadResult_Call[T, R] {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockMicroBatcher_ReadResult_Call[T, R]) RunAndReturn(run func() <-chan interfaces.JobResult[R]) *MockMicroBatcher_ReadResult_Call[T, R] {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Shutdown provides a mock function with given fields:
+func (_m *MockMicroBatcher[T, R]) Shutdown() {
+	_m.Called()
+}
+
+// MockMicroBatcher_Shutdown_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Shutdown'
+type MockMicroBatcher_Shutdown_Call[T any, R any] struct {
+	*mock.Call
+}
+
+// Shutdown is a helper method to define mock.On call
+func (_e *MockMicroBatcher_Expecter[T, R]) Shutdown() *MockMicroBatcher_Shutdown_Call[T, R] {
+	return &MockMicroBatcher_Shutdown_Call[T, R]{Call: _e.mock.On("Shutdown")}
+}
+
+func (_c *MockMicroBatcher_Shutdown_Call[T, R]) Run(run func()) *MockMicroBatcher_Shutdown_Call[T, R] {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockMicroBatcher_Shutdown_Call[T, R]) Return() *MockMicroBatcher_Shutdown_Call[T, R] {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockMicroBatcher_Shutdown_Call[T, R]) RunAndReturn(run func()) *MockMicroBatcher_Shutdown_Call[T, R] {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Submit provides a mock function with given fields: job
 func (_m *MockMicroBatcher[T, R]) Submit(job interfaces.Job[T, R]) error {
 	ret := _m.Called(job)
