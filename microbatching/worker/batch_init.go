@@ -1,4 +1,4 @@
-package microbatching
+package worker
 
 import (
 	inf "github.com/bimalkeeth/upguard/microbatching/interfaces"
@@ -26,7 +26,7 @@ type microBatched[T any, R any] struct {
 }
 
 // NewMicroBatched initializes and starts a micro-batching
-// system to process jobs with specified batch configuration.
+// system to worker jobs with specified worker configuration.
 func NewMicroBatched[T any, R any](
 	batchConfig BatchConfig,
 	batchProcessor inf.BatchProcessor[T, R]) inf.MicroBatcher[T, R] {
