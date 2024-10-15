@@ -11,6 +11,7 @@ import (
 // in batches, executing them in the configured size or timeout.
 func (mb *microBatched[T, R]) startBatchProcessor() {
 	defer mb.waitGroup.Done()
+
 	var jobsContainer []inf.Job[T, R]
 
 	for {
@@ -93,4 +94,23 @@ func (mb *microBatched[T, R]) start() {
 // timeout duration using the configured BatchConfig.
 func (mb *microBatched[T, R]) assignTimer() {
 	mb.batchTimer = time.NewTimer(mb.batchConfig.BatchTimeOutDuration)
+}
+
+// ReadResult streams job results from the micro-batching system.
+// It returns a channel where job results of type inf.JobResult[R] can be received.
+func (mb *microBatched[T, R]) ReadResult() <-chan inf.JobResult[R] {
+	resultRetChan := make(chan inf.JobResult[R])
+	go func(mb *microBatched[T, R], resultRetChan chan inf.JobResult[R]) {
+		defer close(resultRetChan)
+		for {
+			select {
+			case result := <-mb.resultChannel:
+				resultRetChan <- result
+			case <-mb.shutDownChan:
+				return
+			}
+		}
+	}(mb, resultRetChan)
+
+	return resultRetChan
 }

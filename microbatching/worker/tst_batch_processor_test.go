@@ -81,7 +81,6 @@ func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success()
 
 func (suite *WorkerSuiteTest) Test_BatchProcessor_Process_Submit_Batch_Success_With_More_Jobs() {
 	var rres inf.JobResult[string] = StrJobResult[string]{
-
 		JobId:   1,
 		Result:  "test",
 		Error:   nil,
